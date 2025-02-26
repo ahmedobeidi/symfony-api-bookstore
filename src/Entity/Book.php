@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(normalizationContext: ['groups' => ['book:read']]),
         new Post(denormalizationContext: ['groups' => ['book:create']]),
         new Patch(denormalizationContext: ['groups' => ['book:update']])
-    ]
+    ],
 )]
 class Book
 {

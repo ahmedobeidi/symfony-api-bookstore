@@ -19,7 +19,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Get(normalizationContext: ['groups' => ['book:read']]),
         new GetCollection(normalizationContext: ['groups' => ['book:read']]),
         new Post(denormalizationContext: ['groups' => ['book:create']]),
-        new Patch(denormalizationContext: ['groups' => ['book:update']])
+        new Patch(denormalizationContext: ['groups' => ['book:update']]),
+        new Delete()
     ],
 )]
 class Book

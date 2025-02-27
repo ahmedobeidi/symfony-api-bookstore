@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\RandomBooksController;
 use App\Repository\BookRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,10 +17,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['book:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['book:read']]),
-        new Post(denormalizationContext: ['groups' => ['book:create']]),
-        new Patch(denormalizationContext: ['groups' => ['book:update']]),
+        new GetCollection(
+            name: 'random_books',
+            uriTemplate: '/books/random',
+            controller: RandomBooksController::class,
+            normalizationContext: ['groups' => ['book:read']],
+            paginationEnabled: false,
+        ), 
+        new GetCollection(
+            normalizationContext: ['groups' => ['book:read']],
+            paginationItemsPerPage: 8,
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['book:read']]       
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['book:create']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['book:update']]
+        ),
         new Delete()
     ],
 )]

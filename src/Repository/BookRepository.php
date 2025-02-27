@@ -16,6 +16,15 @@ class BookRepository extends ServiceEntityRepository
         parent::__construct($registry, Book::class);
     }
 
+    public function findRandomBooks(int $limit = 4): array
+    {
+         return $this->createQueryBuilder('b')
+             ->orderBy('RAND()') // Note: RAND() is MySQL-specific. Use appropriate function for your DB.
+             ->setMaxResults($limit)
+             ->getQuery()
+             ->getResult();
+    }
+
     //    /**
     //     * @return Book[] Returns an array of Book objects
     //     */

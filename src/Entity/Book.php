@@ -8,11 +8,12 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\RandomBooksController;
+use App\State\RandomBookProvider;
 use App\Repository\BookRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
@@ -20,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(
             name: 'random_books',
             uriTemplate: '/books/random',
-            controller: RandomBooksController::class,
+            provider: RandomBookProvider::class,
             normalizationContext: ['groups' => ['book:read']],
             paginationEnabled: false,
         ), 
@@ -50,18 +51,32 @@ class Book
 
     #[ORM\Column(length: 255)]
     #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Assert\NotBlank] 
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Title must be at least {{ limit }} characters long',
+        maxMessage: 'Title cannot be longer than {{ limit }} characters',
+    )]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Assert\NotBlank]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Assert\Length(
+        min: 12,
+        minMessage: 'Description must be at least {{ limit }} characters long',
+    )]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
     private ?int $price = null;
 
     #[ORM\Column]
@@ -70,6 +85,10 @@ class Book
 
     #[ORM\Column]
     #[Groups(['book:read', 'book:update'])]
+    #[Assert\Type(
+        type: 'boolean',
+        message: 'The value {{ value }} is not a valid boolean.'
+    )]
     private ?bool $available = null;
 
     public function __construct()

@@ -9,15 +9,15 @@ use ApiPlatform\State\ProviderInterface;
 
 class RandomBookProvider implements ProviderInterface
 {
-     private BookRepository $bookRepository;
 
-     public function __construct(BookRepository $bookRepository)
+     public function __construct(private BookRepository $bookRepository)
      {
-          $this->bookRepository = $bookRepository;
+
      }
 
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): iterable
-    {
+     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
+     {
          return $this->bookRepository->findRandomBooks();
-    }
+     }
+
 }

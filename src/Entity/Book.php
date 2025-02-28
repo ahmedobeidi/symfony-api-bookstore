@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => ['book:read']]       
         ),
         new Post(
-            denormalizationContext: ['groups' => ['book:create']]
+            denormalizationContext: ['groups' => ['book:write']]
         ),
         new Patch(
             denormalizationContext: ['groups' => ['book:update']]
@@ -50,7 +50,7 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Groups(['book:read', 'book:write', 'book:update'])]
     #[Assert\NotBlank] 
     #[Assert\Length(
         min: 3,
@@ -61,12 +61,12 @@ class Book
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Groups(['book:read', 'book:write', 'book:update'])]
     #[Assert\NotBlank]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Groups(['book:read', 'book:write', 'book:update'])]
     #[Assert\Length(
         min: 12,
         minMessage: 'Description must be at least {{ limit }} characters long',
@@ -74,7 +74,7 @@ class Book
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['book:read', 'book:create', 'book:update'])]
+    #[Groups(['book:read', 'book:write', 'book:update'])]
     #[Assert\NotBlank]
     #[Assert\Positive]
     private ?int $price = null;
@@ -90,6 +90,12 @@ class Book
         message: 'The value {{ value }} is not a valid boolean.'
     )]
     private ?bool $available = null;
+
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
+    #[Groups(['book:read', 'book:write', 'book:update'])]
+    private ?Category $category = null;
 
     public function __construct()
     {
@@ -163,6 +169,18 @@ class Book
     public function setAvailable(bool $available): static
     {
         $this->available = $available;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

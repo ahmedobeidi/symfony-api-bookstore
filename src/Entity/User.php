@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
+use App\State\UserProcessor;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -18,6 +19,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new Post(
+            uriTemplate: '/register',
+            processor: UserProcessor::class,
+            name: 'user_register',
             denormalizationContext: ['groups' => ['user:write']]
         ),
         new GetCollection(
@@ -50,9 +54,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Groups(['user:read', 'user:write', 'user:update'])]
+    #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
-        message: "Password not valid."
+        message: "Password must contain at least 8 characters, including an uppercase letter, a lowercase letter, a number, and a special character."
     )]
     private ?string $password = null;
 

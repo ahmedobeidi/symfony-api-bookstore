@@ -19,13 +19,14 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new Post(
-            uriTemplate: '/register',
+            uriTemplate: '/users',
             processor: UserProcessor::class,
             name: 'user_register',
             denormalizationContext: ['groups' => ['user:write']]
         ),
         new GetCollection(
-            normalizationContext: ['groups' => ['user:read']]
+            normalizationContext: ['groups' => ['user:read']],
+            security: "is_granted('ROLE_USER')"
         )
     ]
 )]
@@ -53,11 +54,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['user:read', 'user:write', 'user:update'])]
+    #[Groups(['user:write', 'user:update'])]
     #[Assert\NotBlank]
     #[Assert\Regex(
-        pattern: '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
-        message: "Password must contain at least 8 characters, including an uppercase letter, a lowercase letter, a number, and a special character."
+        pattern: '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!$%{}^&*\-])(?!.*["]).{8,}$/',
     )]
     private ?string $password = null;
 

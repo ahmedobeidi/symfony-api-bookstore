@@ -24,19 +24,24 @@ use Symfony\Component\Validator\Constraints as Assert;
             provider: RandomBookProvider::class,
             normalizationContext: ['groups' => ['book:read']],
             paginationEnabled: false,
+            security: "is_granted('ROLE_USER')"
         ), 
         new GetCollection(
             normalizationContext: ['groups' => ['book:read']],
             paginationItemsPerPage: 8,
+            security: "is_granted('ROLE_USER')"
         ),
         new Get(
-            normalizationContext: ['groups' => ['book:read']]       
+            normalizationContext: ['groups' => ['book:read']],
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            denormalizationContext: ['groups' => ['book:write']]
+            denormalizationContext: ['groups' => ['book:write']],
+            security: "is_granted('ROLE_USER')",
         ),
         new Patch(
-            denormalizationContext: ['groups' => ['book:update']]
+            denormalizationContext: ['groups' => ['book:update']],
+            security: "is_granted('ROLE_USER')",
         ),
         new Delete()
     ],

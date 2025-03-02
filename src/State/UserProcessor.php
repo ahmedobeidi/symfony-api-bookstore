@@ -6,7 +6,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Null_;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserProcessor implements ProcessorInterface
@@ -30,8 +29,8 @@ class UserProcessor implements ProcessorInterface
 
             $this->entityManager->persist($data);
             $this->entityManager->flush();
-
-            return $data;
         }
+
+        return $data;
     }
 }

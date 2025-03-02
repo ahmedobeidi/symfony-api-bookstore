@@ -15,10 +15,12 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
-            normalizationContext: ['groups' => ['category:read']]
+            normalizationContext: ['groups' => ['category:read']],
+            security: "is_granted('ROLE_USER')",
         ),
         new Post(
-            denormalizationContext: ['groups' => 'category:write']
+            denormalizationContext: ['groups' => 'category:write'],
+            security: "is_granted('ROLE_USER')",
         )
     ]
 )]
